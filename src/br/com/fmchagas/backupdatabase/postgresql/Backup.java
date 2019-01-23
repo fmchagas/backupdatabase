@@ -9,19 +9,23 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import br.com.fmchagas.backupdatabase.config.ConfigurationProperties;
-import br.com.fmchagas.backupdatabase.util.DateTimeUtil;
+import br.com.fmchagas.backupdatabase.util.GenerateFileBackup;
 
 public class Backup {
 
 	private static Logger logger = Logger.getLogger(Backup.class);
 
 	private ConfigurationProperties cfgProp;
+	private GenerateFileBackup generateFileBackup;
 
 	public Backup(ConfigurationProperties cfgProp) {
 		this.cfgProp = cfgProp;
+		this.generateFileBackup = new GenerateFileBackup(this.cfgProp);
 	}
 
 	public void startBackup() {
+		
+		generateFileBackup.manageQuantity();
 
 		if (logger.isInfoEnabled()) {
 			logger.info("Iniciando backup.");
@@ -89,31 +93,10 @@ public class Backup {
 		command.add("-v");// --verbose
 
 		command.add("-f");// -f � caminho para salvar o dump
-		command.add(getFullNameFile());
+		command.add(generateFileBackup.getFullNameBackup());
 
 		command.add(cfgProp.getDataBaseName());// nome do banco de dados para backup
 		return command;
-	}
-
-	private String getFullNameFile() {
-		StringBuilder sb = new StringBuilder();
-		sb.append(cfgProp.getPathBackup()).append("Dump_").append(cfgProp.getDataBaseName()).append("_")
-				.append(DateTimeUtil.getDateTimeFomat()).append(".backup");
-
-		if (logger.isInfoEnabled()) {
-			logger.info("Salvando cópia de segurança em: " + sb.toString());
-		}
-
-		return sb.toString();
-	}
-
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("Backup [cfgProp=");
-		builder.append(cfgProp);
-		builder.append("]");
-		return builder.toString();
 	}
 	
 }

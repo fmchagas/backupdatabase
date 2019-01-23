@@ -5,7 +5,6 @@ import java.io.IOException;
 import org.apache.log4j.Logger;
 
 import br.com.fmchagas.backupdatabase.config.ConfigurationProperties;
-import br.com.fmchagas.backupdatabase.config.GerenciarQuantidadeBackup;
 import br.com.fmchagas.backupdatabase.postgresql.Backup;
 import br.com.fmchagas.backupdatabase.util.ValidationException;
 
@@ -19,12 +18,9 @@ public class MainBackupDataBase {
 		try {
 			cfgProp.carregarProperties();
 			
-			GerenciarQuantidadeBackup qtdBkp = new GerenciarQuantidadeBackup(cfgProp);
-			qtdBkp.gerenciarQuantidade();
-			
-			//Backup backup = new Backup(cfgProp);
+			Backup backup = new Backup(cfgProp);
 
-			//backup.startBackup();
+			backup.startBackup();
 			
 		} catch (IOException | ValidationException e) {
 			if (logger.isInfoEnabled()) {
